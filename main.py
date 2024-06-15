@@ -198,7 +198,7 @@ class Map:
 
 
 if __name__ == '__main__':
-    cur_map = Map(drop_off_point_num=DROP_OFF_POINT_NUM)
+    cur_map = Map(width=WIDTH, height=HEIGHT, drop_off_point_num=DROP_OFF_POINT_NUM, dist_center_num=DIST_CENTER_NUM)
     plt.figure()
     plt.xlim(0, cur_map.width)
     plt.ylim(0, cur_map.height)
