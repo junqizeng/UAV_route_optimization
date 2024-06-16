@@ -8,4 +8,4 @@ UAV_MAX_CARGO_NUM = 10                          # 无人机最大载货量
 MIN_REMAIN_TIME = 20                            # 被视为必须完成订单的临时时间
 MAX_TASK_NUM = 20                               # 节点单次最大订单数
 TIME_INTERVAL = 5                               # 时间步大小（min）
-STEP_NUM = 24 * 60 / TIME_INTERVAL              # 总时间步数
+STEP_NUM = int(24 * 60 / TIME_INTERVAL)         # 总时间步数

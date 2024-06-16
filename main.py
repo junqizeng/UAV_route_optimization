@@ -90,6 +90,7 @@ class DistCenterPoint:
         直到必须任务集为空
         :return:
         """
+        print(f'总重要任务数： {sum(self.essential_task_list)}')
         total_distance = 0
         uav_num = 0
         while sum(self.essential_task_list) != 0:
@@ -100,6 +101,8 @@ class DistCenterPoint:
             self.essential_task_list = [self.essential_task_list[idx] - selected_route.cargo_dist_list[idx] for idx in
                                         range(len(self.essential_task_list))]
             uav_num += 1
+        print(f'总派出无人机次数： {uav_num}')
+        print(f'总路程： {total_distance}')
 
     def route_research(self, route_list, cur_route):
         cur_distance = cur_route.distance
@@ -151,10 +154,6 @@ class Map:
         self.create_map()
 
     def create_map(self):
-        """
-        生成地图点，随机分为配送中心和卸货点
-        :return:
-        """
         random.seed(123)
         point_num = self.dist_center_num + self.drop_off_point_num
 
@@ -199,31 +198,42 @@ class Map:
 
 if __name__ == '__main__':
     cur_map = Map(width=WIDTH, height=HEIGHT, drop_off_point_num=DROP_OFF_POINT_NUM, dist_center_num=DIST_CENTER_NUM)
-    plt.figure()
-    plt.xlim(0, cur_map.width)
-    plt.ylim(0, cur_map.height)
+    plt.figure(figsize=(4.8, 4.8))
+    plt.xlim(-3, cur_map.width + 3)
+    plt.ylim(-3, cur_map.height + 3)
     dist_center_x = [dis_center.pos[0] for dis_center in cur_map.dist_center_list]
     dist_center_y = [dis_center.pos[1] for dis_center in cur_map.dist_center_list]
-    plt.scatter(x=dist_center_x, y=dist_center_y, c='b', marker='o')
+    plt.scatter(x=dist_center_x, y=dist_center_y, c='b', marker='o', label='distribution center')
 
     drop_off_point_x = [x for (x, y) in cur_map.drop_off_point_list]
     drop_off_point_y = [y for (x, y) in cur_map.drop_off_point_list]
-    plt.scatter(x=drop_off_point_x, y=drop_off_point_y, c='g', marker='o')
+    plt.scatter(x=drop_off_point_x, y=drop_off_point_y, c='g', marker='o', label='drop off point')
 
     invalid_drop_off_point_x = [x for (x, y) in cur_map.invalid_drop_off_point_list]
     invalid_drop_off_point_y = [y for (x, y) in cur_map.invalid_drop_off_point_list]
-    plt.scatter(x=invalid_drop_off_point_x, y=invalid_drop_off_point_y, c='r', marker='o')
+    plt.scatter(x=invalid_drop_off_point_x, y=invalid_drop_off_point_y, c='r', marker='o', label='unreachable point')
+    # plt.legend(loc='upper right')
+    plt.grid()
     plt.show()
 
-    plt.figure()
+    plt.figure(figsize=(4.8, 4.8))
+
+    plt.xlim(-3, cur_map.width + 3)
+    plt.ylim(-3, cur_map.height + 3)
     color_list = ['b', 'g', 'r', 'c', 'm']
+    plt.grid()
+
     for c_i in range(len(color_list)):
         cur_center = cur_map.dist_center_list[c_i]
         cur_center_x = [point[0] for point in cur_center.drop_off_point_list]
         cur_center_y = [point[1] for point in cur_center.drop_off_point_list]
-        plt.scatter(x=cur_center_x, y=cur_center_y, c=color_list[c_i], marker='o')
-        plt.scatter(x=cur_center.pos[0], y=cur_center.pos[1], c=color_list[c_i], marker='*', s=200)
+        plt.scatter(x=cur_center_x, y=cur_center_y, c=color_list[c_i], marker='o', label='drop off point')
+        plt.scatter(x=cur_center.pos[0], y=cur_center.pos[1], c=color_list[c_i], marker='*', s=200,
+                    label='distribution center')
+    # plt.legend(loc='upper right', bbox_to_anchor=(1, 0.5))
+    # plt.tight_layout(rect=[0, 0, 0.85, 1])
     plt.show()
 
-    for _ in range(STEP_NUM):
+    for step_idx in range(STEP_NUM):
+        print(f'第 {step_idx} 时间步')
         cur_map.time_step_forward()
